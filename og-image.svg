@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Apocalypse 666 — Calculadora da Besta">
+  <defs>
+    <radialGradient id="bgRad" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#7f1d1d"/>
+      <stop offset="60%" stop-color="#450a0a"/>
+      <stop offset="100%" stop-color="#0c0a09"/>
+    </radialGradient>
+    <linearGradient id="numGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fef2f2"/>
+      <stop offset="50%" stop-color="#fca5a5"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <filter id="bigGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="18"/>
+      <feOffset dx="0" dy="0" result="offsetblur"/>
+      <feFlood flood-color="#dc2626" flood-opacity="0.7"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="6" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.7"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fundo -->
+  <rect width="1200" height="630" fill="url(#bgRad)"/>
+
+  <!-- Vinheta -->
+  <rect width="1200" height="630" fill="url(#bgRad)" opacity="0.4"/>
+
+  <!-- Marca d'água: 666 gigante no fundo -->
+  <text x="600" y="380"
+        text-anchor="middle"
+        font-family="Cinzel, Georgia, 'Times New Roman', serif"
+        font-size="520"
+        font-weight="700"
+        fill="#dc2626"
+        fill-opacity="0.08">666</text>
+
+  <!-- 666 principal -->
+  <g filter="url(#bigGlow)">
+    <text x="600" y="320"
+          text-anchor="middle"
+          font-family="Cinzel, Georgia, 'Times New Roman', serif"
+          font-size="240"
+          font-weight="700"
+          letter-spacing="-8"
+          fill="url(#numGrad)">666</text>
+  </g>
+
+  <!-- Título -->
+  <g filter="url(#softShadow)">
+    <text x="600" y="450"
+          text-anchor="middle"
+          font-family="Cinzel, Georgia, 'Times New Roman', serif"
+          font-size="52"
+          font-weight="700"
+          fill="#ffffff"
+          letter-spacing="4">APOCALYPSE 666</text>
+  </g>
+
+  <!-- Subtítulo -->
+  <text x="600" y="500"
+        text-anchor="middle"
+        font-family="Inter, system-ui, -apple-system, sans-serif"
+        font-size="28"
+        font-weight="500"
+        fill="#fca5a5">Calculadora Numerológica de Nomes</text>
+
+  <!-- URL -->
+  <text x="600" y="565"
+        text-anchor="middle"
+        font-family="JetBrains Mono, ui-monospace, monospace"
+        font-size="20"
+        font-weight="400"
+        fill="#9ca3af"
+        letter-spacing="1">calculadora-da-besta.vercel.app</text>
+
+  <!-- Selo no canto -->
+  <g transform="translate(80, 80)">
+    <rect x="-10" y="-30" width="200" height="50" rx="8" fill="#dc2626" fill-opacity="0.15" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="90" y="2"
+          text-anchor="middle"
+          font-family="Inter, system-ui, sans-serif"
+          font-size="18"
+          font-weight="700"
+          fill="#fca5a5"
+          letter-spacing="3">MARCA DA BESTA</text>
+  </g>
+</svg>

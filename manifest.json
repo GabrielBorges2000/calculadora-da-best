@@ -1,0 +1,28 @@
+{
+  "name": "Apocalypse 666 — Calculadora Numerológica",
+  "short_name": "Apocal. 666",
+  "description": "Calculadora numerológica modular de nomes: ASCII, Unicode, Hebraico, Grego, Romano. A marca da besta começa nos nomes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d12",
+  "theme_color": "#dc2626",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
