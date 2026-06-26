@@ -1,0 +1,15 @@
+{
+  "name": "calculadora-de-besta",
+  "version": "1.0.0",
+  "description": "Sistema modular de cálculo numerológico de textos (Apocalypse 666)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node scripts/serve.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.2"
+}

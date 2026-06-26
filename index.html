@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apocalypse 666 — Calculadora de Nomes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Cinzel:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ---------------------- Tokens ---------------------- */
+    :root {
+      --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      --font-display: "Cinzel", serif;
+
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.2);
+
+      --glow-accent: 0 0 0 1px rgba(220, 38, 38, 0.4),
+        0 0 24px rgba(220, 38, 38, 0.15);
+    }
+
+    /* Atributo HTML `hidden` precisa ganhar força contra regras display */
+    [hidden] { display: none !important; }
+
+    /* Dark — Apocalypse */
+    [data-theme="dark"] {
+      --bg: #0b0d12;
+      --bg-elevated: #15181f;
+      --bg-card: #1a1d26;
+      --border: #272a35;
+      --border-strong: #3a3e4d;
+      --fg: #e8e6e3;
+      --fg-muted: #9ca3af;
+      --fg-subtle: #6b7280;
+      --accent: #dc2626;
+      --accent-hover: #ef4444;
+      --accent-soft: rgba(220, 38, 38, 0.12);
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+
+    /* Light — minimalista moderno */
+    [data-theme="light"] {
+      --bg: #fafaf9;
+      --bg-elevated: #ffffff;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --fg: #0f172a;
+      --fg-muted: #475569;
+      --fg-subtle: #94a3b8;
+      --accent: #b91c1c;
+      --accent-hover: #991b1b;
+      --accent-soft: rgba(185, 28, 28, 0.08);
+      --success: #059669;
+      --warning: #d97706;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.1);
+    }
+
+    /* ---------------------- Reset ---------------------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background var(--transition), color var(--transition);
+      -webkit-font-smoothing: antialiased;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+    body, .container { overflow-x: hidden; }
+
+    /* ---------------------- Layout ---------------------- */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    header.page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent) 0%, #7f1d1d 100%);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--fg-muted);
+    }
+
+    /* ---------------------- Theme toggle ---------------------- */
+    .theme-toggle {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg);
+      transition: all var(--transition);
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .theme-toggle svg { width: 16px; height: 16px; }
+
+    /* ---------------------- Card ---------------------- */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card h2 {
+      margin: 0 0 16px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .card .hint {
+      font-size: 13px;
+      color: var(--fg-muted);
+      margin: 0 0 16px;
+    }
+
+    /* ---------------------- Dropzone ---------------------- */
+    .dropzone {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      background: var(--bg-elevated);
+      overflow: hidden;
+    }
+    .dropzone > .dz-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none; /* deixa clicks passarem pro label/input */
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: var(--glow-accent);
+    }
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 1;
+      margin: 0;
+    }
+    .dropzone .icon {
+      width: 32px;
+      height: 32px;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .dropzone strong { display: block; font-size: 14px; }
+    .dropzone small { color: var(--fg-muted); font-size: 12px; }
+
+    /* ---------------------- Textarea + actions ---------------------- */
+    .textarea-wrap {
+      margin-top: 16px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      resize: vertical;
+      transition: border-color var(--transition);
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all var(--transition);
+      background: var(--bg-elevated);
+      color: var(--fg);
+      border-color: var(--border);
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: #fff;
+    }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* ---------------------- Status bar ---------------------- */
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 14px 20px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .status.hidden { display: none; }
+    .status-item { display: flex; align-items: center; gap: 8px; color: var(--fg-muted); }
+    .status-item strong {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    /* ---------------------- Summary table ---------------------- */
+    .table-wrap {
+      overflow: auto;
+      max-height: min(60vh, 520px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+    }
+    .table-wrap::-webkit-scrollbar { width: 10px; height: 10px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 5px;
+    }
+    .table-wrap::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
+    table.summary {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    table.summary th,
+    table.summary td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    table.summary thead th {
+      background: var(--bg-card);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fg-muted);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    table.summary td.num,
+    table.summary th.num {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    table.summary tbody tr {
+      transition: background var(--transition);
+      cursor: pointer;
+    }
+    table.summary tbody tr:hover { background: var(--accent-soft); }
+    table.summary tbody tr:last-child td { border-bottom: 0; }
+
+    /* ---------------------- Per-name details ---------------------- */
+    details.name-detail {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    details.name-detail[open] { box-shadow: var(--shadow); }
+    details.name-detail summary {
+      cursor: pointer;
+      padding: 14px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    details.name-detail summary .name-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    details.name-detail summary::-webkit-details-marker { display: none; }
+    details.name-detail summary::after {
+      content: "▸";
+      font-size: 12px;
+      color: var(--fg-muted);
+      transition: transform var(--transition);
+    }
+    details.name-detail[open] summary::after { transform: rotate(90deg); }
+    details.name-detail[open] summary { border-bottom: 1px solid var(--border); }
+
+    .method-block {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .method-block:last-child { border-bottom: 0; }
+    .method-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .method-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .method-header .total {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+    }
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .details-table th,
+    .details-table td {
+      padding: 4px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .details-table th {
+      text-align: left;
+      color: var(--fg-muted);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .details-table td.num,
+    .details-table th.num {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .details-table td.char-cell {
+      font-family: var(--font-mono);
+      color: var(--fg);
+    }
+    .details-table .char-space {
+      color: var(--fg-subtle);
+      font-style: italic;
+      font-size: 11px;
+    }
+
+    /* ---------------------- Tabs ---------------------- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--fg); }
+    .tab-btn[aria-selected="true"] {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ---------------------- Empty / loading ---------------------- */
+    .empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--fg-muted);
+    }
+    .empty .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      opacity: 0.5;
+    }
+    .empty h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .empty p { margin: 0; font-size: 13px; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .fade-in {
+      animation: fadeIn 300ms ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------------------- Errors ---------------------- */
+    .errors {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      font-size: 13px;
+    }
+    .errors.visible { display: block; }
+    .errors ul { margin: 6px 0 0; padding-left: 20px; }
+
+    /* ---------------------- Footer ---------------------- */
+    footer.page-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--fg-muted);
+      text-align: center;
+    }
+    footer.page-footer details {
+      text-align: left;
+      max-width: 600px;
+      margin: 16px auto 0;
+    }
+    footer.page-footer summary {
+      cursor: pointer;
+      color: var(--fg-muted);
+      font-weight: 500;
+    }
+    footer.page-footer code {
+      font-family: var(--font-mono);
+      background: var(--bg-elevated);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* ---------------------- Filter bar ---------------------- */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 1.6fr 2fr 0.8fr 0.8fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .filter-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .filter-field label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fg-muted);
+      font-weight: 600;
+    }
+    .filter-field input,
+    .filter-field select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 13px;
+      transition: border-color var(--transition);
+      min-width: 0;
+      width: 100%;
+    }
+    .filter-field input:focus,
+    .filter-field select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .filter-field input[type="number"] {
+      font-family: var(--font-mono);
+    }
+    .filter-bar .btn-clear {
+      height: 38px;
+      padding: 0 14px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* ---------------------- Multiselect (métodos) ---------------------- */
+    .mselect { position: relative; min-width: 0; }
+    .mselect-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--fg);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color var(--transition);
+      min-width: 0;
+    }
+    .mselect-trigger:hover { border-color: var(--border-strong); }
+    .mselect-trigger:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .mselect-trigger .chev {
+      width: 14px; height: 14px; flex: 0 0 auto;
+      transition: transform var(--transition);
+      color: var(--fg-muted);
+    }
+    .mselect-trigger[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    .mselect-trigger > span {
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      text-align: left; flex: 1; min-width: 0;
+    }
+    .mselect-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      max-height: 320px;
+      overflow-y: auto;
+      min-width: 200px;
+    }
+    .mselect-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--fg);
+      transition: background var(--transition);
+      user-select: none;
+    }
+    .mselect-item:hover { background: var(--accent-soft); }
+    .mselect-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex: 0 0 auto;
+      margin: 0;
+    }
+    .mselect-item span { flex: 1; }
+    .mselect-actions {
+      display: flex;
+      gap: 6px;
+      padding: 6px 6px 2px;
+      border-top: 1px solid var(--border);
+      margin-top: 6px;
+    }
+    .mselect-actions button {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--fg-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .mselect-actions button:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .filter-count {
+      font-size: 12px;
+      color: var(--fg-muted);
+      margin: 0 0 12px;
+      font-family: var(--font-mono);
+    }
+    .filter-count strong { color: var(--accent); font-weight: 600; }
+
+    @media (max-width: 900px) {
+      .filter-bar { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .filter-bar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+      }
+      .filter-bar .btn-clear { width: 100%; height: auto; padding: 10px; }
+    }
+
+    /* ---------------------- Responsive ---------------------- */
+    @media (max-width: 900px) {
+      .status { gap: 12px 20px; }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 20px 14px 48px; }
+      header.page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .theme-toggle { align-self: flex-end; }
+      .brand-text h1 { font-size: 18px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 17px; }
+      .card { padding: 16px; border-radius: 10px; }
+      .dropzone { padding: 22px 14px; }
+      .dropzone .icon { width: 28px; height: 28px; }
+      .dropzone strong { font-size: 13px; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .actions .btn { justify-content: center; }
+      .btn { padding: 10px 14px; font-size: 13px; }
+      .status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 14px;
+      }
+      table.summary th,
+      table.summary td { padding: 8px 10px; font-size: 12px; }
+      .method-block { padding: 14px 14px; }
+      .method-header h3 { font-size: 13px; }
+      .method-header .total { font-size: 14px; }
+      .details-table { font-size: 11px; }
+      .tabs { margin-bottom: 14px; }
+      .tab-btn { padding: 8px 12px; font-size: 13px; }
+      footer.page-footer { margin-top: 32px; }
+    }
+
+    @media (max-width: 380px) {
+      .brand-text p { font-size: 11px; }
+      .container { padding: 16px 10px 40px; }
+      .card { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">666</div>
+        <div class="brand-text">
+          <h1>Apocalypse 666</h1>
+          <p>Calculadora numerológica modular de nomes</p>
+        </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+        <span id="themeIcon"></span>
+        <span id="themeLabel">Claro</span>
+      </button>
+    </header>
+
+    <!-- Upload + entrada -->
+    <section class="card">
+      <h2>1. Forneça os nomes</h2>
+      <p class="hint">
+        Aceita um arquivo <code>.txt</code> (um nome por linha, linhas com
+        <code>#</code> são comentários) ou cole a lista diretamente.
+      </p>
+
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".txt,text/plain" />
+        <div class="dz-content">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <polyline points="9 15 12 12 15 15" />
+          </svg>
+          <strong>Arraste seu .txt aqui ou clique para selecionar</strong>
+          <small>Formato: um nome por linha</small>
+        </div>
+      </label>
+
+      <div class="textarea-wrap">
+        <textarea id="namesTextarea" placeholder="Ou cole aqui, um nome por linha:&#10;Neron Caesar&#10;Vicarius Filii Dei&#10;Papa"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="calcBtn">
+          <span id="calcSpinner"></span>
+          <span id="calcLabel">Calcular</span>
+        </button>
+        <button class="btn" id="loadDefaultBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Carregar names.txt padrão
+        </button>
+        <button class="btn" id="downloadCsvBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar CSV
+        </button>
+        <button class="btn" id="downloadTxtBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar nomes.txt
+        </button>
+        <button class="btn" id="clearNamesBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Limpar nomes
+        </button>
+      </div>
+    </section>
+
+    <!-- Status -->
+    <div class="status hidden" id="statusBar">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        <span><strong id="statNames">0</strong> nomes calculados</span>
+      </div>
+      <div class="status-item">
+        <span><strong id="statMethods">0</strong> métodos aplicados</span>
+      </div>
+      <div class="status-item">
+        <span>Calculado em <strong id="statTime">0ms</strong></span>
+      </div>
+      <div class="status-item">
+        <span>Total geral: <strong id="statGrand">0</strong></span>
+      </div>
+    </div>
+
+    <div class="errors" id="errorsBox">
+      <strong>Erros durante o cálculo:</strong>
+      <ul id="errorsList"></ul>
+    </div>
+
+    <!-- Filtros -->
+    <section class="card hidden" id="filterCard">
+      <h2>2. Filtros</h2>
+      <div class="filter-bar">
+        <div class="filter-field">
+          <label for="filterText">Buscar nome</label>
+          <input type="search" id="filterText" placeholder="ex.: Nero, Papa, Pontifex..." autocomplete="off" />
+        </div>
+        <div class="filter-field">
+          <label>Métodos (colunas visíveis)</label>
+          <div class="mselect" id="methodMselect">
+            <button
+              type="button"
+              class="mselect-trigger"
+              id="methodMselectTrigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span id="methodMselectLabel">Todos os métodos</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="mselect-menu" id="methodMselectMenu" role="listbox" hidden></div>
+          </div>
+        </div>
+        <div class="filter-field">
+          <label for="filterOp">Operador</label>
+          <select id="filterOp">
+            <option value="eq">=</option>
+            <option value="gt">&gt;</option>
+            <option value="gte">≥</option>
+            <option value="lt">&lt;</option>
+            <option value="lte">≤</option>
+            <option value="neq">≠</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="filterNum">Valor</label>
+          <input type="number" id="filterNum" placeholder="666" />
+        </div>
+        <button class="btn btn-clear" id="filterClearBtn" type="button">Limpar</button>
+      </div>
+      <p class="filter-count" id="filterCount"></p>
+    </section>
+
+    <!-- Resultados -->
+    <section class="card" id="resultsCard">
+      <h2>3. Resultados</h2>
+      <div role="tablist" class="tabs" id="resultsTabs">
+        <button role="tab" class="tab-btn" id="tabSummaryBtn" aria-selected="true" aria-controls="tabSummary">
+          Tabela resumo
+        </button>
+        <button role="tab" class="tab-btn" id="tabDetailsBtn" aria-selected="false" aria-controls="tabDetails">
+          Por nome (detalhes)
+        </button>
+      </div>
+      <div id="resultsHost">
+        <div class="tab-panel active" id="tabSummary" role="tabpanel" aria-labelledby="tabSummaryBtn">
+          <div class="empty">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
+            <h3>Aguardando cálculo</h3>
+            <p>Forneça os nomes acima e clique em <strong>Calcular</strong>.</p>
+          </div>
+        </div>
+        <div class="tab-panel" id="tabDetails" role="tabpanel" aria-labelledby="tabDetailsBtn"></div>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <p>
+        Sistema modular · cada arquivo em <code>/calculators</code> é um
+        plugin detectado automaticamente.
+      </p>
+      <details>
+        <summary>Como rodar a interface web?</summary>
+        <p style="margin-top: 8px;">
+          Devido a restrições de segurança em <code>file://</code> no
+          Chrome, recomenda-se servir via HTTP:
+        </p>
+        <p><code>pnpm web</code> → abre <code>http://localhost:8080</code></p>
+        <p style="margin-top: 8px;">
+          Alternativa manual: <code>python3 -m http.server 8080</code>
+          ou Chrome com
+          <code>--allow-file-access-from-files</code>.
+        </p>
+      </details>
+    </footer>
+  </div>
+
+  <script type="module">
+    // ============================================================
+    // Estado global da página
+    // ============================================================
+    let currentResults = null;     // [{ name, ascii: {...}, ... }]
+    let pluginOrder = [];          // ["ascii", "alphabet", ...] — ordem estável
+    let activeMethods = new Set(); // plugins atualmente visíveis (subset de pluginOrder)
+
+    // ============================================================
+    // 1) Carrega os calculadores como módulos ESM dinâmicos
+    // ============================================================
+    //
+    // Caminho relativo a este HTML (servido de raiz pelo serve.js).
+    // Adicionar um novo arquivo em /calculators só requer colocá-lo
+    // nesta lista.
+    const PLUGIN_NAMES = [
+      "ascii",
+      "alphabet",
+      "roman",
+      "unicode",
+      "gematria_hebrew",
+      "isopsephy_greek",
+    ];
+
+    async function loadPlugins() {
+      const plugins = {};
+      for (const name of PLUGIN_NAMES) {
+        try {
+          const mod = await import(`./calculators/${name}.js`);
+          plugins[name] = mod.default;
+        } catch (err) {
+          console.error(`[aviso] plugin ${name} falhou:`, err);
+        }
+      }
+      pluginOrder = Object.keys(plugins);
+      activeMethods = new Set(pluginOrder); // todos marcados por padrão
+      populateMethodMselect();
+      return plugins;
+    }
+
+    // Popula o multiselect customizado de métodos.
+    function populateMethodMselect() {
+      const menu = $("methodMselectMenu");
+      menu.innerHTML = "";
+
+      for (const name of pluginOrder) {
+        const id = `mselect-${name}`;
+        const label = document.createElement("label");
+        label.className = "mselect-item";
+        label.setAttribute("for", id);
+        label.innerHTML = `
+          <input type="checkbox" id="${id}" value="${escapeHtml(name)}" checked />
+          <span>${escapeHtml(prettyMethod(name))}</span>
+        `;
+        menu.appendChild(label);
+      }
+
+      // Rodapé com ações em massa
+      const actions = document.createElement("div");
+      actions.className = "mselect-actions";
+      actions.innerHTML = `
+        <button type="button" data-act="all">Selecionar todos</button>
+        <button type="button" data-act="none">Limpar</button>
+      `;
+      menu.appendChild(actions);
+
+      updateMselectLabel();
+
+      // Listeners delegados
+      menu.addEventListener("change", (e) => {
+        const cb = e.target.closest('input[type="checkbox"]');
+        if (!cb) return;
+        if (cb.checked) activeMethods.add(cb.value);
+        else activeMethods.delete(cb.value);
+        updateMselectLabel();
+        refreshResults();
+      });
+      actions.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-act]");
+        if (!btn) return;
+        const act = btn.dataset.act;
+        const checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+        if (act === "all") {
+          activeMethods = new Set(pluginOrder);
+          checkboxes.forEach((cb) => (cb.checked = true));
+        } else if (act === "none") {
+          activeMethods = new Set();
+          checkboxes.forEach((cb) => (cb.checked = false));
+        }
+        updateMselectLabel();
+        refreshResults();
+      });
+    }
+
+    function updateMselectLabel() {
+      const label = $("methodMselectLabel");
+      if (!label) return;
+      const total = pluginOrder.length;
+      const selected = activeMethods.size;
+      if (total === 0) label.textContent = "—";
+      else if (selected === total) label.textContent = "Todos os métodos";
+      else if (selected === 0) label.textContent = "Nenhum método";
+      else label.textContent = `${selected} de ${total} métodos`;
+    }
+
+    function toggleMselect(force) {
+      const menu = $("methodMselectMenu");
+      const trigger = $("methodMselectTrigger");
+      const willOpen =
+        typeof force === "boolean" ? force : menu.hasAttribute("hidden");
+      if (willOpen) menu.removeAttribute("hidden");
+      else menu.setAttribute("hidden", "");
+      trigger.setAttribute("aria-expanded", String(willOpen));
+    }
+
+    // ============================================================
+    // 2) Calcula todos os métodos para uma lista de nomes
+    // ============================================================
+    function calculateAll(plugins, names) {
+      return names.map((name) => {
+        const row = { name };
+        for (const [pluginName, fn] of Object.entries(plugins)) {
+          try {
+            const { total, details } = fn(name);
+            row[pluginName] = { total, details };
+          } catch (err) {
+            row[pluginName] = { total: 0, details: [], error: String(err) };
+          }
+        }
+        return row;
+      });
+    }
+
+    // ============================================================
+    // 3) Parser de .txt — replica readNames() do CLI
+    // ============================================================
+    function parseNames(text) {
+      return text
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith("#"));
+    }
+
+    // ============================================================
+    // 4) Render: tabela resumo
+    // ============================================================
+    function visibleMethods() {
+      return pluginOrder.filter((p) => activeMethods.has(p));
+    }
+
+    function renderSummary(rows) {
+      const cols = visibleMethods();
+      const thead = ["Nome", ...cols.map(prettyMethod)]
+        .map((h, i) => `<th class="${i === 0 ? "" : "num"}">${escapeHtml(h)}</th>`)
+        .join("");
+
+      const tbody = rows
+        .map((row, idx) => {
+          const cells = [
+            `<td>${escapeHtml(row.name)}</td>`,
+            ...cols.map((p) => `<td class="num">${row[p].total}</td>`),
+          ].join("");
+          return `<tr data-idx="${idx}">${cells}</tr>`;
+        })
+        .join("");
+
+      return `
+        <div class="table-wrap">
+          <table class="summary">
+            <thead><tr>${thead}</tr></thead>
+            <tbody>${tbody}</tbody>
+          </table>
+        </div>
+        <p class="hint" style="margin-top: 12px;">
+          Clique em uma linha para ver o detalhamento por caractere.
+        </p>
+      `;
+    }
+
+    // ============================================================
+    // 5) Render: detalhes por nome (expansível)
+    // ============================================================
+    function renderPerName(rows) {
+      return rows
+        .map((row, idx) => {
+          const cols = visibleMethods();
+          const blocks = cols
+            .map((p) => renderMethodBlock(p, row[p]))
+            .join("");
+
+          return `
+            <details class="name-detail" data-idx="${idx}">
+              <summary>
+                <span class="name-label">${escapeHtml(row.name)}</span>
+              </summary>
+              ${blocks}
+            </details>
+          `;
+        })
+        .join("");
+    }
+
+    function renderMethodBlock(name, data) {
+      const rows = data.details
+        .map((item) => {
+          const charLabel =
+            item.char === " "
+              ? `<span class="char-space">(espaço)</span>`
+              : item.char === "\n"
+              ? `<span class="char-space">\\n</span>`
+              : item.char === "\t"
+              ? `<span class="char-space">\\t</span>`
+              : `<code>${escapeHtml(item.char)}</code>`;
+          return `<tr><td class="char-cell">${charLabel}</td><td class="num">${item.value}</td></tr>`;
+        })
+        .join("");
+
+      return `
+        <div class="method-block">
+          <div class="method-header">
+            <h3>${escapeHtml(prettyMethod(name))}</h3>
+            <span class="total">${data.total}</span>
+          </div>
+          <table class="details-table">
+            <thead><tr><th>Caractere</th><th class="num">Valor</th></tr></thead>
+            <tbody>${rows || `<tr><td colspan="2" style="text-align:center;color:var(--fg-subtle);">(vazio)</td></tr>`}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // 6) Geração de CSV (RFC 4180) com BOM UTF-8
+    // ============================================================
+    function csvEscape(value) {
+      const s = String(value ?? "");
+      if (/[",\r\n]/.test(s)) {
+        return `"${s.replace(/"/g, '""')}"`;
+      }
+      return s;
+    }
+
+    function buildCsv(rows) {
+      const cols = visibleMethods();
+      const headers = ["name", ...cols];
+      const lines = [headers.join(",")];
+
+      for (const row of rows) {
+        const cells = [csvEscape(row.name)];
+        for (const p of cols) cells.push(csvEscape(row[p].total));
+        lines.push(cells.join(","));
+      }
+
+      // BOM para o Excel reconhecer UTF-8 (acentos em "Vicarius Filii Dei" etc.)
+      return "﻿" + lines.join("\r\n") + "\r\n";
+    }
+
+    function downloadFile(content, filename, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function timestamp() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return (
+        `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+        `-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+      );
+    }
+
+    // ============================================================
+    // 7) Utilitários de DOM
+    // ============================================================
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function prettyMethod(slug) {
+      const map = {
+        ascii: "ASCII",
+        alphabet: "Alphabet (A=1…Z=26)",
+        roman: "Roman Numerals",
+        unicode: "Unicode",
+        gematria_hebrew: "Gematria Hebraica",
+        isopsephy_greek: "Isopsefia Grega",
+      };
+      return map[slug] ?? slug;
+    }
+
+    // ============================================================
+    // 7.5) Filtragem
+    // ============================================================
+    let lastAllRows = [];          // último conjunto de resultados brutos
+    let activeFilters = { text: "", op: "eq", num: null };
+
+    const OP_FNS = {
+      eq:  (a, b) => a === b,
+      gt:  (a, b) => a > b,
+      gte: (a, b) => a >= b,
+      lt:  (a, b) => a < b,
+      lte: (a, b) => a <= b,
+      neq: (a, b) => a !== b,
+    };
+
+    function applyFilters(rows) {
+      const text = activeFilters.text.trim().toLowerCase();
+      const op = activeFilters.op;
+      const num = activeFilters.num;
+
+      return rows.filter((row) => {
+        if (text && !row.name.toLowerCase().includes(text)) return false;
+        // Filtro numérico: considera o total geral (soma dos métodos visíveis).
+        if (num !== null && !Number.isNaN(num)) {
+          const fn = OP_FNS[op];
+          const total = visibleMethods().reduce(
+            (s, p) => s + (row[p]?.total ?? 0),
+            0,
+          );
+          if (!fn(total, num)) return false;
+        }
+        return true;
+      });
+    }
+
+    function readFiltersFromUi() {
+      activeFilters.text = $("filterText").value;
+      activeFilters.op = $("filterOp").value;
+      const raw = $("filterNum").value;
+      activeFilters.num = raw === "" ? null : Number(raw);
+    }
+
+    function refreshResults() {
+      if (!lastAllRows.length) return;
+      const filtered = applyFilters(lastAllRows);
+      renderResults(filtered);
+      updateFilterCount(filtered.length, lastAllRows.length);
+    }
+
+    function updateFilterCount(shown, total) {
+      const el = $("filterCount");
+      if (!total) { el.textContent = ""; return; }
+      el.innerHTML = shown === total
+        ? `Mostrando <strong>${total}</strong> nome(s).`
+        : `Mostrando <strong>${shown}</strong> de <strong>${total}</strong> nome(s).`;
+    }
+
+    function clearFilters() {
+      $("filterText").value = "";
+      $("filterOp").value = "eq";
+      $("filterNum").value = "";
+      activeFilters = { text: "", op: "eq", num: null };
+      refreshResults();
+    }
+
+    function $(id) { return document.getElementById(id); }
+
+    // ============================================================
+    // 8) Wiring
+    // ============================================================
+    const plugins = await loadPlugins();
+
+    // ----- Theme toggle -----
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+    updateThemeUi();
+
+    $("themeToggle").addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      updateThemeUi();
+    });
+
+    function updateThemeUi() {
+      const current = document.documentElement.getAttribute("data-theme");
+      const icon = current === "dark"
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+      $("themeIcon").innerHTML = icon;
+      $("themeLabel").textContent = current === "dark" ? "Claro" : "Escuro";
+    }
+
+    // ----- File input + drag-and-drop -----
+    const dropzone = $("dropzone");
+    const fileInput = $("fileInput");
+    const textarea = $("namesTextarea");
+
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      textarea.value = text;
+    });
+
+    ["dragenter", "dragover"].forEach((evt) => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+      });
+    });
+    ["dragleave", "drop"].forEach((evt) => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+      });
+    });
+    dropzone.addEventListener("drop", async (e) => {
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      const text = await file.text();
+      textarea.value = text;
+    });
+
+    // ----- Botão "carregar names.txt padrão" -----
+    $("loadDefaultBtn").addEventListener("click", async () => {
+      try {
+        const res = await fetch("./names.txt");
+        if (!res.ok) throw new Error(res.statusText);
+        textarea.value = await res.text();
+        updateDownloadState();
+      } catch (err) {
+        alert("Não foi possível carregar names.txt: " + err.message);
+      }
+    });
+
+    // ----- Botão Calcular -----
+    $("calcBtn").addEventListener("click", async () => {
+      const text = textarea.value;
+      const names = parseNames(text);
+
+      const errorsBox = $("errorsBox");
+      const errorsList = $("errorsList");
+      errorsBox.classList.remove("visible");
+      errorsList.innerHTML = "";
+
+      if (names.length === 0) {
+        alert("Forneça ao menos um nome antes de calcular.");
+        return;
+      }
+
+      const calcBtn = $("calcBtn");
+      const calcSpinner = $("calcSpinner");
+      const calcLabel = $("calcLabel");
+      calcBtn.disabled = true;
+      calcSpinner.innerHTML = '<span class="spinner"></span>';
+      calcLabel.textContent = "Calculando...";
+
+      const t0 = performance.now();
+      // yield pro browser pintar o spinner
+      await new Promise((r) => setTimeout(r, 10));
+      const results = calculateAll(plugins, names);
+      const dt = performance.now() - t0;
+
+      // Coleta erros que plugins possam ter marcado
+      const errors = [];
+      for (const row of results) {
+        for (const p of pluginOrder) {
+          if (row[p].error) {
+            errors.push(`${row.name} → ${p}: ${row[p].error}`);
+          }
+        }
+      }
+      if (errors.length) {
+        errorsBox.classList.add("visible");
+        errorsList.innerHTML = errors
+          .map((e) => `<li>${escapeHtml(e)}</li>`)
+          .join("");
+      }
+
+      currentResults = results;
+      lastAllRows = results;
+      $("filterCard").classList.remove("hidden");
+      refreshResults();
+
+      // Status bar
+      const grandTotal = results.reduce(
+        (acc, row) =>
+          acc + pluginOrder.reduce((s, p) => s + row[p].total, 0),
+        0,
+      );
+      $("statNames").textContent = results.length;
+      $("statMethods").textContent = pluginOrder.length;
+      $("statTime").textContent = `${Math.round(dt)}ms`;
+      $("statGrand").textContent = grandTotal.toLocaleString("pt-BR");
+      $("statusBar").classList.remove("hidden");
+
+      // Sincroniza estado dos downloads com base nos nomes atuais.
+      updateDownloadState();
+
+      calcBtn.disabled = false;
+      calcSpinner.innerHTML = "";
+      calcLabel.textContent = "Calcular";
+    });
+
+    // ----- Downloads -----
+    $("downloadCsvBtn").addEventListener("click", () => {
+      if (!lastAllRows.length) return;
+      // Exporta exatamente o que o usuário está vendo (respeita filtros).
+      const rowsToExport = applyFilters(lastAllRows);
+      const csv = buildCsv(rowsToExport);
+      const suffix = rowsToExport.length === lastAllRows.length
+        ? ""
+        : `-filtrado-${rowsToExport.length}de${lastAllRows.length}`;
+      downloadFile(csv, `apocalypse-666-${timestamp()}${suffix}.csv`, "text/csv;charset=utf-8");
+    });
+
+    $("downloadTxtBtn").addEventListener("click", () => {
+      const text = textarea.value.trim();
+      if (!text) return;
+      downloadFile(text + "\n", `names-${timestamp()}.txt`, "text/plain;charset=utf-8");
+    });
+
+    // ----- Render principal -----
+    function renderResults(rows) {
+      rows = rows ?? lastAllRows;
+      const summaryPanel = $("tabSummary");
+      const detailsPanel = $("tabDetails");
+
+      const noDataHtml = `
+        <div class="empty">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
+          <h3>Aguardando cálculo</h3>
+          <p>Forneça os nomes acima e clique em <strong>Calcular</strong>.</p>
+        </div>
+      `;
+
+      const noMatchHtml = `
+        <div class="empty">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <h3>Nenhum nome corresponde aos filtros</h3>
+          <p>Ajuste os filtros acima ou clique em <strong>Limpar</strong>.</p>
+        </div>
+      `;
+
+      if (!rows || rows.length === 0) {
+        const html = (!lastAllRows || lastAllRows.length === 0)
+          ? noDataHtml
+          : noMatchHtml;
+        summaryPanel.innerHTML = html;
+        detailsPanel.innerHTML = "";
+        return;
+      }
+
+      summaryPanel.innerHTML = `<div class="fade-in">${renderSummary(rows)}</div>`;
+      detailsPanel.innerHTML = `<div class="fade-in">${renderPerName(rows)}</div>`;
+
+      // Click numa linha da tabela resumo → troca pra aba de detalhes e abre o <details>
+      summaryPanel.querySelectorAll("table.summary tbody tr").forEach((tr) => {
+        tr.addEventListener("click", () => {
+          const idx = tr.dataset.idx;
+          switchTab("details");
+          const det = detailsPanel.querySelector(`details.name-detail[data-idx="${idx}"]`);
+          if (det) {
+            det.open = true;
+            det.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    }
+
+    // ----- Tabs -----
+    function switchTab(which) {
+      const isSummary = which === "summary";
+      $("tabSummaryBtn").setAttribute("aria-selected", isSummary);
+      $("tabDetailsBtn").setAttribute("aria-selected", !isSummary);
+      $("tabSummary").classList.toggle("active", isSummary);
+      $("tabDetails").classList.toggle("active", !isSummary);
+    }
+    $("tabSummaryBtn").addEventListener("click", () => switchTab("summary"));
+    $("tabDetailsBtn").addEventListener("click", () => switchTab("details"));
+
+    // ----- Filtros (tempo real) -----
+    $("filterText").addEventListener("input", () => {
+      readFiltersFromUi();
+      refreshResults();
+    });
+    $("filterOp").addEventListener("change", () => {
+      readFiltersFromUi();
+      refreshResults();
+    });
+    $("filterNum").addEventListener("input", () => {
+      readFiltersFromUi();
+      refreshResults();
+    });
+    $("filterClearBtn").addEventListener("click", clearFilters);
+
+    // ----- Multiselect de métodos -----
+    $("methodMselectTrigger").addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMselect();
+    });
+    document.addEventListener("click", (e) => {
+      const root = $("methodMselect");
+      if (!root.contains(e.target)) toggleMselect(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") toggleMselect(false);
+    });
+
+    // ----- Estado dos botões de download -----
+    function updateDownloadState() {
+      const hasNames = parseNames(textarea.value).length > 0;
+      $("downloadCsvBtn").disabled = !hasNames;
+      $("downloadTxtBtn").disabled = !hasNames;
+    }
+    textarea.addEventListener("input", updateDownloadState);
+    fileInput.addEventListener("change", updateDownloadState);
+    updateDownloadState(); // estado inicial
+
+    // ----- Botão Limpar nomes -----
+    $("clearNamesBtn").addEventListener("click", () => {
+      textarea.value = "";
+      fileInput.value = "";
+      currentResults = null;
+      lastAllRows = [];
+      $("statusBar").classList.add("hidden");
+      $("filterCard").classList.add("hidden");
+      const errorsBox = $("errorsBox");
+      errorsBox.classList.remove("visible");
+      $("errorsList").innerHTML = "";
+      toggleMselect(false);
+      clearFilters();
+      // Restaura o painel de resultados para o estado inicial.
+      $("tabSummary").innerHTML = `
+        <div class="empty">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
+          <h3>Aguardando cálculo</h3>
+          <p>Forneça os nomes acima e clique em <strong>Calcular</strong>.</p>
+        </div>
+      `;
+      $("tabDetails").innerHTML = "";
+      updateDownloadState();
+      textarea.focus();
+    });
+  </script>
+</body>
+</html>
